@@ -1,90 +1,45 @@
-# inkstream-docs
+# InkStream Docs
 
-> The centralized documentation site for all InkStream-synced projects.
+Central documentation site that aggregates markdown from multiple projects via the InkStream CLI.
 
-## Tech Stack
+## Prerequisites
 
-- **Framework**: Next.js 14 (App Router, server components)
-- **Content**: Markdown files in `content/` (synced by `inkstream-cli`)
-- **Search**: Client-side full-text search via Fuse.js
-- **Rendering**: `marked` for Markdown → HTML
-- **Deployment**: Vercel
+- Node.js (LTS, e.g. 18.x or 20.x)
+- npm
 
-## Local Development
+## Quick Start
 
 ```bash
 npm install
 npm run dev
-# → http://localhost:3000
 ```
+
+Opens http://localhost:3000.
+
+## Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `npm run dev` | Start development server (port 3000) |
+| `npm run build` | Production build |
+| `npm run start` | Serve production build |
+| `npm run lint` | Run Next.js lint |
 
 ## Content Structure
 
-All documentation lives in `content/` following this hierarchy:
+Content lives under `content/` with the structure:
 
 ```
-content/
-  <workspace>/
-    <project>/
-      <category>/
-        <slug>.md
+content/[workspace]/[project]/[category]/[slug].md
 ```
 
-**Example:**
-```
-content/personal/inkstream/architecture/high-level.md
-content/personal/inkstream/workflows/docs-pipeline.md
-content/work/sample-project/architecture/overview.md
-```
+Example: `content/digitouch/txm-ui/architecture/high-level.md` → `/digitouch/txm-ui/architecture/high-level`
 
-These map to URLs:
-```
-/personal/inkstream/architecture/high-level
-/personal/inkstream/workflows/docs-pipeline
-/work/sample-project/architecture/overview
-```
+**Note:** Content for projects is synced via the InkStream CLI from source projects. Do not edit `content/[workspace]/[project]/` manually for project docs — edits will be overwritten on the next sync.
 
-Pages are **auto-discovered** — just add a `.md` file and it appears in the sidebar and search.
+## Full Documentation
 
-## Markdown Front-Matter
+For the complete InkStream guide (CLI setup, writing docs, configuration, troubleshooting), run the docs site locally and navigate to:
 
-Each markdown file can include optional YAML front-matter:
-
-```markdown
----
-title: My Custom Title
----
-
-# Content goes here
-```
-
-If no `title` is provided, the first H1 or the humanized slug is used.
-
-## Build
-
-```bash
-npm run build
-```
-
-This generates a production-optimized Next.js build using static rendering for all discovered pages.
-
-## Deploying to Vercel
-
-1. Push this repo (or the `inkstream/` monorepo) to GitHub.
-2. Create a new Vercel project and point it to the `inkstream-docs/` directory.
-3. Set **Root Directory** to `inkstream-docs` in Vercel settings.
-4. Vercel will automatically run `npm run build` and deploy.
-
-Every `git push` from `inkstream sync` will trigger a new Vercel deployment.
-
-### Vercel Environment Variables
-
-No environment variables are required for the base setup. The docs site reads content from the filesystem at build time.
-
-## Navigation
-
-The sidebar is automatically generated from the `content/` folder hierarchy:
-- Workspaces as top-level sections
-- Projects as subsections
-- Categories as nav groups
-- Pages as nav links (with active state highlighting)
+- **Local:** http://localhost:3000/inkstream/guide/notes/documentation-index
+- Or browse: `/inkstream/guide/` → Architecture, Workflows, API, Notes
