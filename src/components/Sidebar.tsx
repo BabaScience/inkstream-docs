@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSidebar } from "./SidebarContext";
 import type { NavTree } from "@/lib/content";
 
 interface SidebarProps {
@@ -10,9 +11,19 @@ interface SidebarProps {
 
 export function Sidebar({ tree }: SidebarProps) {
   const pathname = usePathname();
+  const { open, toggle } = useSidebar();
 
   return (
-    <nav className="sidebar" aria-label="Documentation navigation">
+    <>
+      <div
+        className={`sidebar-overlay${open ? " visible" : ""}`}
+        onClick={toggle}
+        aria-hidden="true"
+      />
+      <nav
+        className={`sidebar${open ? " open" : ""}`}
+        aria-label="Documentation navigation"
+      >
       {Object.entries(tree).map(([workspace, projects]) => (
         <div key={workspace} className="nav-workspace">
           <div className="nav-workspace-label">{workspace}</div>
@@ -47,6 +58,7 @@ export function Sidebar({ tree }: SidebarProps) {
         </div>
       ))}
     </nav>
+    </>
   );
 }
 

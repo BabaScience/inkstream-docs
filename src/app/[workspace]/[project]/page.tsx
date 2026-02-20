@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getAllPages, buildNavTree } from "@/lib/content";
 import { buildSearchIndex } from "@/lib/search";
 import { Sidebar } from "@/components/Sidebar";
-import { Search } from "@/components/Search";
+import { Header } from "@/components/Header";
 
 interface PageParams {
   workspace: string;
@@ -41,13 +41,7 @@ export default function ProjectPage({ params }: { params: PageParams }) {
 
   return (
     <div className="app-shell">
-      <header className="header">
-        <Link href="/" className="header-logo">
-          Ink<span>Stream</span> Docs
-        </Link>
-        <Search index={searchIndex} />
-      </header>
-
+      <Header searchIndex={searchIndex} />
       <Sidebar tree={tree} />
 
       <main className="main-content">
@@ -59,12 +53,13 @@ export default function ProjectPage({ params }: { params: PageParams }) {
           <span className="breadcrumb-current">{humanize(project)}</span>
         </nav>
 
-        <h1 style={{ color: "var(--text-heading)", marginBottom: "0.5rem" }}>
-          {humanize(project)}
-        </h1>
-        <p style={{ color: "var(--text-muted)", marginBottom: "2rem" }}>
-          Workspace: <strong style={{ color: "var(--accent)" }}>{workspace}</strong>
-        </p>
+        <div className="section-header">
+          <div className="section-tag">Workspace</div>
+          <h2>{humanize(project)}</h2>
+          <p className="section-desc">
+            Workspace: <strong style={{ color: "var(--cyan)" }}>{workspace}</strong>
+          </p>
+        </div>
 
         <div className="home-grid">
           {Object.entries(projectData).map(([category, pages]) => (
@@ -77,7 +72,7 @@ export default function ProjectPage({ params }: { params: PageParams }) {
                   style={{
                     display: "block",
                     fontSize: "0.85rem",
-                    color: "var(--link)",
+                    color: "var(--cyan)",
                     textDecoration: "none",
                     marginTop: "0.3rem",
                   }}

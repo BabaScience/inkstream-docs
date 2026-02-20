@@ -4,7 +4,8 @@ import { marked } from "marked";
 import { getAllPages, buildNavTree, getPageContent } from "@/lib/content";
 import { buildSearchIndex } from "@/lib/search";
 import { Sidebar } from "@/components/Sidebar";
-import { Search } from "@/components/Search";
+import { Header } from "@/components/Header";
+import { MermaidInit } from "@/components/Mermaid";
 
 interface PageParams {
   workspace: string;
@@ -48,13 +49,7 @@ export default function DocPage({ params }: { params: PageParams }) {
 
   return (
     <div className="app-shell">
-      <header className="header">
-        <Link href="/" className="header-logo">
-          Ink<span>Stream</span> Docs
-        </Link>
-        <Search index={searchIndex} />
-      </header>
-
+      <Header searchIndex={searchIndex} />
       <Sidebar tree={tree} />
 
       <main className="main-content">
@@ -70,10 +65,12 @@ export default function DocPage({ params }: { params: PageParams }) {
           <span className="breadcrumb-current">{page.title}</span>
         </nav>
 
-        <article
-          className="prose"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
+        <MermaidInit docKey={`${workspace}/${project}/${category}/${slug}`}>
+          <article
+            className="prose"
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
+        </MermaidInit>
       </main>
     </div>
   );
