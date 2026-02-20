@@ -777,6 +777,41 @@ body.inkstream-body::before {
   line-height: 1.6;
 }
 
+/* ── Get Started section ──────────────────────────────────────────────── */
+
+.get-started-section {
+  margin-bottom: 3rem;
+}
+
+.get-started-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.get-started-block {
+  margin-bottom: 0;
+}
+
+.get-started-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 0.5rem;
+}
+
+.get-started-block pre {
+  margin: 0;
+}
+
+.get-started-block pre code {
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
 /* Section header (for project page) */
 .section-header {
   margin-bottom: 2.5rem;
