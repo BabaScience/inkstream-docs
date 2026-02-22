@@ -13,6 +13,7 @@
 | Document | Purpose |
 |----------|---------|
 | [**high-level.md**](./architecture/high-level.md) | System design, components, data flow, sync engine, trade-offs |
+| [**diagram-visuals.md**](./architecture/diagram-visuals.md) | How diagram visuals work — data model, agent selection, pipeline, Konva rendering |
 | [**missing-features.md**](./architecture/missing-features.md) | **Gaps from MISSION.md** — implemented vs. planned, Phase 2+ roadmap |
 
 ### Workflows (`docs/workflows/`)

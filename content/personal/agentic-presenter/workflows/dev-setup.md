@@ -118,7 +118,24 @@ agentic-presenter/
 - **Cognitive HUD:** Press `H` to toggle — shows live profile scores
 - **Engagement signals:** Enable camera (bottom-right), check console for `[Engagement] Signal:`
 - **WebSocket:** Browser DevTools → Network → WS
-- **Backend logs:** `[TTS]`, `[WS]`, `[DB]` prefixes
+- **Backend logs:** `[TTS]`, `[WS]`, `[DB]`, `[Latency]` prefixes
+
+### Latency Measurement
+
+The system logs latency metrics to help validate MISSION.md targets:
+
+- **Voice-to-visual:** <200ms from narration segment start to diagram step trigger
+- **UI response:** <50ms
+- **TTS initiation:** <500ms from user request
+
+**Backend (terminal):** Look for `[Latency]` logs:
+- `SEGMENT_START segment_id=X elapsed_ms=Y` — time to prepare and send segment (TTS + sync)
+- `TTS segment_id=X elapsed_ms=Y` — ElevenLabs non-streaming: time to generate full audio
+- `TTS first_chunk segment_id=X elapsed_ms=Y` — ElevenLabs streaming: time to first audio chunk
+
+**Frontend (browser console):** Look for `[Latency] voice-to-visual` — time from message receipt to `playAudio` call.
+
+To measure: run a presentation, filter logs by `[Latency]`, and compare against targets.
 
 ### Conventions
 

@@ -4,6 +4,8 @@
 
 System design for the Agentic Presentation System — a multimodal AI presentation app where Claude acts as a cognitive architect, delivering synchronized voice narration with progressively-built Konva.js diagrams tailored to each learner's cognitive profile.
 
+For a deeper dive into how diagram visuals (illustrations) work — data model, agent selection, pipeline, and rendering — see [diagram-visuals.md](./diagram-visuals.md).
+
 ## Components
 
 ### Frontend (`packages/frontend/`)
