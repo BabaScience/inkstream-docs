@@ -21,6 +21,7 @@
 | Document | Purpose |
 |----------|---------|
 | [**dev-setup.md**](./workflows/dev-setup.md) | Dev setup, build order, conventions, debugging |
+| [**testing.md**](./workflows/testing.md) | **Test coverage (living doc)** — what's tested, test inventory, gaps, how to update |
 
 ### API (`docs/api/`)
 
