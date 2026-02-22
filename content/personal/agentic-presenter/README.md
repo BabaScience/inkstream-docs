@@ -2,16 +2,38 @@
 
 > Documentation hub for the Multimodal AI Presentation System. Use these docs to understand, maintain, and extend the project.
 
+**Structure:** Follows `docs/AGENTS.md` (InkStreamCLI + folder layout). See `.cursor/rules/documentation.mdc` for conventions.
+
 ---
 
 ## Documentation Index
 
+### Architecture (`docs/architecture/`)
+
 | Document | Purpose |
 |----------|---------|
-| [**ARCHITECTURE.md**](./ARCHITECTURE.md) | System design, data flow, sync engine, and component responsibilities |
-| [**MISSING_FEATURES.md**](./MISSING_FEATURES.md) | **Gaps from MISSION.md** — implemented vs. planned features, Phase 2+ roadmap |
-| [**DEVELOPMENT.md**](./DEVELOPMENT.md) | Dev setup, build order, conventions, and contributing |
-| [**API_REFERENCE.md**](./API_REFERENCE.md) | REST endpoints, WebSocket protocol, and message types |
+| [**high-level.md**](./architecture/high-level.md) | System design, components, data flow, sync engine, trade-offs |
+| [**missing-features.md**](./architecture/missing-features.md) | **Gaps from MISSION.md** — implemented vs. planned, Phase 2+ roadmap |
+
+### Workflows (`docs/workflows/`)
+
+| Document | Purpose |
+|----------|---------|
+| [**dev-setup.md**](./workflows/dev-setup.md) | Dev setup, build order, conventions, debugging |
+
+### API (`docs/api/`)
+
+| Document | Purpose |
+|----------|---------|
+| [**service-endpoints.md**](./api/service-endpoints.md) | REST endpoints, WebSocket protocol, message types |
+
+### Notes (`docs/notes/`)
+
+Exploratory notes, design spikes, investigations.
+
+### Decisions (`docs/decisions/`)
+
+Architecture decision records (ADR style). Format: `YYYY-MM-DD-short-title.md`.
 
 ---
 
@@ -19,6 +41,7 @@
 
 - **MISSION.md** (project root) — Original product vision and technical spec
 - **README.md** (project root) — Quick start and user-facing overview
+- **AGENTS.md** — InkStreamCLI rules and docs folder structure
 
 ---
 
@@ -37,4 +60,4 @@
 | Whisper.cpp STT | ⚠️ Stubbed (Web Speech API fallback) |
 | OpenVoice TTS | ⚠️ Stubbed (Phase 2) |
 
-See [MISSING_FEATURES.md](./MISSING_FEATURES.md) for full details.
+See [missing-features.md](./architecture/missing-features.md) for full details.

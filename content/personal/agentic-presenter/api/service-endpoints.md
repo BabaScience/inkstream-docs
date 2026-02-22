@@ -1,19 +1,10 @@
-# API Reference
+# Service Endpoints
 
-REST endpoints, WebSocket protocol, and message types.
+## Overview
 
----
+REST API and WebSocket protocol for the Agentic Presentation System. Backend runs at `http://localhost:3001`; WebSocket at `ws://localhost:3001/ws`.
 
-## Base URLs
-
-| Environment | Backend | Frontend |
-|-------------|---------|----------|
-| Development | `http://localhost:3001` | `http://localhost:5173` |
-| WebSocket | `ws://localhost:3001/ws` | — |
-
----
-
-## REST Endpoints
+## Endpoints
 
 ### Health
 
@@ -22,8 +13,6 @@ GET /health
 ```
 
 Returns `{ status: "ok", timestamp: "..." }`.
-
----
 
 ### Sessions
 
@@ -34,8 +23,6 @@ Body: { user_id?: string, topic: string }
 
 Creates a session. Returns `{ id, user_id, topic, started_at }`.
 
----
-
 ### Presentation (REST fallback)
 
 ```
@@ -44,8 +31,6 @@ Body: { topic: string, user_id?: string }
 ```
 
 Generates a presentation plan. Returns `{ plan: PresentationPlan, session_id }`.
-
----
 
 ### Presentation Events (SSE)
 
@@ -62,8 +47,6 @@ Body: { sessionId, breakpoint_id, option_index, chosen_topic }
 
 Submit branch choice when using SSE fallback.
 
----
-
 ### Profile
 
 ```
@@ -79,8 +62,6 @@ Body: Partial<CognitiveProfile>
 
 Updates profile (admin/debug).
 
----
-
 ### TTS
 
 ```
@@ -90,27 +71,34 @@ Body: { segment: NarrationSegment }
 
 Generates TTS for a segment. Returns audio stream or base64 URL. Used internally; primary path is WebSocket + `TTS_CHUNK`.
 
----
+## Parameters
 
-## WebSocket Protocol
+### Base URLs
+
+| Environment | Backend | Frontend |
+|-------------|---------|----------|
+| Development | `http://localhost:3001` | `http://localhost:5173` |
+| WebSocket | `ws://localhost:3001/ws` | — |
+
+### WebSocket Protocol
 
 Connect to `ws://localhost:3001/ws`. All messages are JSON.
 
-### Server → Client
+**Server → Client:**
 
 | Type | Payload | Description |
 |------|---------|-------------|
 | `PRESENTATION_START` | `plan_title`, `total_segments`, `session_id?` | Presentation began |
 | `SEGMENT_START` | `segment_id`, `segment`, `audio_url`, `diagram_steps` | New segment; play audio, schedule diagram steps |
 | `SEGMENT_COMPLETE` | `segment_id` | Segment finished |
-| `DIAGRAM_STEP` | `step: DiagramStep` | Apply diagram step (can be sent separately) |
+| `DIAGRAM_STEP` | `step: DiagramStep` | Apply diagram step |
 | `TTS_CHUNK` | `segment_id`, `chunk`, `is_final` | Streaming TTS chunk (base64) |
 | `BREAKPOINT` | `breakpoint: Breakpoint` | Pause for user choice |
 | `PRESENTATION_COMPLETE` | `session_id` | All segments done |
 | `ERROR` | `message`, `code?` | Error |
 | `PROFILE_UPDATE` | `profile: Partial<CognitiveProfile>` | Profile changed |
 
-### Client → Server
+**Client → Server:**
 
 | Type | Payload | Description |
 |------|---------|-------------|
@@ -122,11 +110,26 @@ Connect to `ws://localhost:3001/ws`. All messages are JSON.
 | `RESUME` | — | Resume playback |
 | `VOICE_INPUT` | `transcript` | Voice question (Phase 2) |
 
----
+## Examples
 
-## Type Definitions (Key)
+### Start presentation via WebSocket
 
-### PresentationPlan
+```json
+{ "type": "START_PRESENTATION", "topic": "Explain Kubernetes networking" }
+```
+
+### Branch choice
+
+```json
+{
+  "type": "BRANCH_CHOICE",
+  "breakpoint_id": "bp-1",
+  "option_index": 0,
+  "chosen_topic": "kube-proxy iptables"
+}
+```
+
+### Key types (from `packages/shared/types/presentation.ts`)
 
 ```ts
 interface PresentationPlan {
@@ -136,11 +139,7 @@ interface PresentationPlan {
   diagram_sequence: DiagramStep[];
   breakpoints: Breakpoint[];
 }
-```
 
-### NarrationSegment
-
-```ts
 interface NarrationSegment {
   id: string;
   text: string;
@@ -149,11 +148,7 @@ interface NarrationSegment {
   speaking_pace: "slow" | "normal" | "fast";
   analogy_anchor?: string;
 }
-```
 
-### DiagramStep
-
-```ts
 interface DiagramStep {
   id: string;
   trigger_segment_id: string;
@@ -161,11 +156,7 @@ interface DiagramStep {
   action: "add" | "highlight" | "fade" | "connect" | "label" | "group";
   element: DiagramElement;
 }
-```
 
-### Breakpoint
-
-```ts
 interface Breakpoint {
   id: string;
   trigger_segment_id: string;
@@ -174,19 +165,9 @@ interface Breakpoint {
 }
 ```
 
-### CognitiveProfile
+## Error Handling
 
-```ts
-interface CognitiveProfile {
-  user_id: string;
-  visual_verbal_score: number;      // -1 to 1
-  sequential_exploratory_score: number;
-  abstract_concrete_score: number;
-  avg_comprehension_speed_ms: number;
-  preferred_analogy_domains: string[];
-  session_count: number;
-  updated_at: string;
-}
-```
-
-Full definitions: `packages/shared/types/presentation.ts`.
+- **WebSocket:** Server sends `{ type: "ERROR", message: string, code?: string }` on failures.
+- **REST:** Returns appropriate HTTP status codes; errors include `{ error: string }` in body.
+- **TTS fallback:** When ElevenLabs unavailable or fails, frontend uses browser Speech Synthesis.
+- **Claude fallback:** When no API key, uses hardcoded `k8sFallbackPlan`.

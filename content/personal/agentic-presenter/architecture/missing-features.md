@@ -1,8 +1,8 @@
 # Missing Features & Gaps from MISSION.md
 
-This document tracks what is **implemented** vs. **planned** according to MISSION.md, so maintainers can prioritize and avoid scope creep.
+## Overview
 
----
+This document tracks what is **implemented** vs. **planned** according to MISSION.md, so maintainers can prioritize and avoid scope creep.
 
 ## Summary Table
 
@@ -14,7 +14,7 @@ This document tracks what is **implemented** vs. **planned** according to MISSIO
 | Whisper.cpp STT | "Expose as local HTTP endpoint, document setup in README" | ⚠️ Service exists, not fully wired; README lacks setup | 1 |
 | OpenVoice v2 TTS | "Self-hosted fallback — stub the endpoint" | ✅ Stubbed | 2 |
 | Character-by-character label | "Labels appear after arrow completes" / "character-by-character label" | ❌ Labels fade in, not character-by-character | 1 |
-| Struggle signal adaptation | "Agent adapts if struggle signals detected (slow response, repeated questions → slows down, adds analogy)" | ❌ Not implemented | 3 |
+| Struggle signal adaptation | "Agent adapts if struggle signals detected" | ❌ Not implemented | 3 |
 | Voice questions mid-presentation | "User asking questions via voice mid-presentation" | ❌ VOICE_INPUT logged but not processed | 2 |
 | Latency targets | Voice-to-visual <200ms, UI <50ms, TTS initiation <500ms | ⚠️ Not measured or validated | 1 |
 | Pause after sentence boundary | "Breakpoints: pause after sentence boundary" | ⚠️ Pause at segment end, not mid-sentence | 1 |
@@ -26,8 +26,6 @@ This document tracks what is **implemented** vs. **planned** according to MISSIO
 | Cognitive HUD | "Dev overlay for demo validation" | ✅ Implemented | 1 |
 | Database migrations | Exact tables from MISSION | ✅ Implemented | 1 |
 | .env.example | "All secrets, feature flags, provider switches" | ✅ Implemented | 1 |
-
----
 
 ## Detailed Gaps
 
@@ -41,8 +39,6 @@ This document tracks what is **implemented** vs. **planned** according to MISSIO
 
 **Action:** Add `// TODO: Phase 2` if D3 layout algorithms are desired for dynamic diagrams.
 
----
-
 ### 2. MediaPipe FaceMesh — Stub Only
 
 **MISSION.md:** "Phase 1: stub the signal processor, wire the camera feed, log signals to console"
@@ -51,8 +47,6 @@ This document tracks what is **implemented** vs. **planned** according to MISSIO
 
 **Action:** Phase 1 spec says "stub" — current state is acceptable. Phase 3: integrate MediaPipe for real engagement detection.
 
----
-
 ### 3. Whisper.cpp — Incomplete Integration
 
 **MISSION.md:** "Whisper.cpp edge model for low-latency STT — expose as local HTTP endpoint, document setup in README"
@@ -60,10 +54,9 @@ This document tracks what is **implemented** vs. **planned** according to MISSIO
 **Current:** `whisperService.ts` has `transcribeAudio()` and `isWhisperAvailable()`. Topic input uses Web Speech API. No backend route that accepts audio and returns transcript. README does not document Whisper.cpp setup.
 
 **Action:**
+
 - Add README section: "Optional: Whisper.cpp for STT" with install/setup steps
 - Wire `VOICE_INPUT` to optionally use Whisper when endpoint available (Phase 2)
-
----
 
 ### 4. Character-by-Character Label Animation
 
@@ -73,8 +66,6 @@ This document tracks what is **implemented** vs. **planned** according to MISSIO
 
 **Action:** `// TODO: Phase 2` — add character-by-character label animation in `PresentationCanvas` for labels.
 
----
-
 ### 5. Struggle Signal Adaptation (Phase 3)
 
 **MISSION.md:** "Agent adapts if struggle signals detected (slow response, repeated questions → slows down, adds analogy)"
@@ -82,8 +73,6 @@ This document tracks what is **implemented** vs. **planned** according to MISSIO
 **Current:** No struggle detection. Cognitive profiler updates from replays, breakpoint choices, etc., but does not feed back into live presentation pacing.
 
 **Action:** Phase 3 — wire engagement/struggle signals to sync engine and Claude context.
-
----
 
 ### 6. Voice Questions Mid-Presentation
 
@@ -93,20 +82,13 @@ This document tracks what is **implemented** vs. **planned** according to MISSIO
 
 **Action:** Phase 2 — handle `VOICE_INPUT`, pass transcript + current segment to Claude, inject response into flow.
 
----
-
 ### 7. Latency Targets — Not Validated
 
-**MISSION.md:**
-- Voice-to-visual sync: <200ms from narration segment start to diagram step trigger
-- UI response: <50ms
-- TTS generation initiation: <500ms from user request
+**MISSION.md:** Voice-to-visual <200ms, UI <50ms, TTS initiation <500ms
 
 **Current:** No instrumentation or benchmarks.
 
-**Action:** Add latency logging; document in DEVELOPMENT.md how to measure.
-
----
+**Action:** Add latency logging; document in `docs/workflows/dev-setup.md` how to measure.
 
 ### 8. Breakpoint: Pause After Sentence Boundary
 
@@ -115,8 +97,6 @@ This document tracks what is **implemented** vs. **planned** according to MISSIO
 **Current:** Breakpoints fire at segment end. If segment is long, pause may feel mid-thought.
 
 **Action:** Ensure Claude generates segments so breakpoints align with sentence boundaries. No code change if prompt is sufficient.
-
----
 
 ## Explicitly Out of Scope (Phase 2+)
 
@@ -130,11 +110,7 @@ From MISSION.md and README — do **not** implement without explicit scope chang
 - Mobile responsive layout
 - Authentication / user accounts
 
----
-
 ## Acceptance Criteria Checklist (Phase 1)
-
-From README — self-check before declaring Phase 1 done:
 
 | # | Criterion | Status |
 |---|-----------|--------|
@@ -151,11 +127,9 @@ From README — self-check before declaring Phase 1 done:
 | 11 | WebSocket reconnects automatically | ✅ |
 | 12 | System works without API keys (fallback + browser TTS) | ✅ |
 
----
-
 ## Recommended Next Steps
 
-1. **Document Whisper.cpp setup** in README for optional STT.
-2. **Add latency instrumentation** for sync and TTS.
-3. **Phase 2 planning:** Voice questions, character-by-character labels, D3 layout (if needed).
-4. **Phase 3 planning:** MediaPipe integration, struggle signal adaptation.
+1. Document Whisper.cpp setup in README for optional STT.
+2. Add latency instrumentation for sync and TTS.
+3. Phase 2 planning: Voice questions, character-by-character labels, D3 layout (if needed).
+4. Phase 3 planning: MediaPipe integration, struggle signal adaptation.
