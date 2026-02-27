@@ -6,6 +6,7 @@ import { buildSearchIndex } from "@/lib/search";
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import { MermaidInit } from "@/components/Mermaid";
+import { TableOfContents } from "@/components/TableOfContents";
 
 interface PageParams {
   workspace: string;
@@ -35,6 +36,16 @@ export async function generateMetadata({ params }: { params: PageParams }) {
   };
 }
 
+/** Convert heading text to a URL-safe id slug */
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/[\s_]+/g, "-")
+    .replace(/-+/g, "-");
+}
+
 export default function DocPage({ params }: { params: PageParams }) {
   const { workspace, project, category, slug } = params;
 
@@ -45,14 +56,22 @@ export default function DocPage({ params }: { params: PageParams }) {
   const tree = buildNavTree(allPages);
   const searchIndex = buildSearchIndex();
 
-  const html = marked.parse(page.content) as string;
+  // Configure marked with a custom renderer that adds id attributes to headings
+  const renderer = new marked.Renderer();
+
+  renderer.heading = function (text: string, level: number): string {
+    const id = slugify(text);
+    return `<h${level} id="${id}">${text}</h${level}>\n`;
+  };
+
+  const html = marked.parse(page.content, { renderer }) as string;
 
   return (
     <div className="app-shell">
       <Header searchIndex={searchIndex} />
       <Sidebar tree={tree} />
 
-      <main className="main-content">
+      <main className="main-content has-toc">
         <nav className="breadcrumb" aria-label="Breadcrumb">
           <Link href="/">Home</Link>
           <span className="breadcrumb-sep">›</span>
@@ -72,6 +91,9 @@ export default function DocPage({ params }: { params: PageParams }) {
           />
         </MermaidInit>
       </main>
+
+      {/* Sticky right-side Table of Contents (hidden below 1200px via CSS) */}
+      <TableOfContents contentSelector=".prose" />
     </div>
   );
 }
